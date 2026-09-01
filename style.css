@@ -1901,19 +1901,13 @@ ul { list-style: none; }
   max-width: 260px;
   object-fit: contain;
   display: block;
-  filter: grayscale(40%) opacity(0.75);
-  transition: filter 0.35s ease;
-}
-
-.client-logo-item:hover img {
-  filter: grayscale(0%) opacity(1);
 }
 
 .client-logo-item span {
   font-size: 0.9rem;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: rgba(44,62,80,0.6);
+  color: rgba(44,62,80,0.75);
   white-space: nowrap;
   text-align: center;
   transition: color 0.3s ease;
@@ -3003,17 +2997,19 @@ body,
 ============================================= */
 .branding-portfolio-section {
   background: var(--white);
-  padding: clamp(80px, 10vw, 130px) clamp(24px, 5vw, 72px);
+  padding: clamp(80px, 10vw, 130px) 0;
   border-top: 1px solid var(--border);
+  overflow: hidden;
 }
 
 .branding-portfolio-inner {
   max-width: 1320px;
   margin: 0 auto;
+  padding: 0 clamp(24px, 5vw, 72px);
 }
 
 .branding-portfolio-header {
-  margin-bottom: clamp(48px, 6vw, 72px);
+  margin-bottom: clamp(36px, 4vw, 56px);
   max-width: 700px;
 }
 
@@ -3034,16 +3030,42 @@ body,
   max-width: 580px;
 }
 
-/* ── Card list ── */
-.branding-cards-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
+/* ── Branding horizontal infinite marquee ── */
+.branding-marquee-wrap {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 10px;
+  padding: 24px 0 44px 0;
+  /* soft edge fade mask */
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+          mask-image: linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%);
+}
+
+.branding-marquee-track {
+  display: flex;
+  flex-wrap: nowrap;           /* never wrap */
+  width: max-content;          /* shrink-wrap to content */
+  will-change: transform;
+  animation: brandingMarqueeLoop 48s linear infinite;
+}
+
+/* Pause marquee smoothly when hovering anywhere on track or card */
+.branding-marquee-wrap:hover .branding-marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes brandingMarqueeLoop {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
 /* ── Individual tile card ── */
 .branding-card {
   display: block;
+  flex: 0 0 clamp(320px, 28vw, 440px);
+  width: clamp(320px, 28vw, 440px);
+  margin: 0 14px;
   background: var(--charcoal);
   border: 1px solid var(--border);
   border-radius: 20px;
@@ -3051,7 +3073,7 @@ body,
   cursor: pointer;
   position: relative;
   aspect-ratio: 4 / 3;
-  box-shadow: 0 2px 16px rgba(44, 62, 80, 0.06);
+  box-shadow: 0 4px 20px rgba(44, 62, 80, 0.08);
   transition: transform 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               box-shadow 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94),
               border-color 0.35s ease;
@@ -3063,9 +3085,10 @@ body,
 
 .branding-card:hover,
 .branding-card:focus-visible {
-  transform: translateY(-5px) scale(1.005);
-  box-shadow: 0 12px 48px rgba(44, 62, 80, 0.13);
-  border-color: rgba(211, 84, 0, 0.25);
+  transform: translateY(-8px) scale(1.015);
+  box-shadow: 0 16px 48px rgba(44, 62, 80, 0.18) !important;
+  border-color: rgba(211, 84, 0, 0.35);
+  z-index: 10;
 }
 
 .branding-card:focus-visible {
@@ -3104,12 +3127,12 @@ body,
   position: absolute;
   inset: 0;
   z-index: 2;
-  padding: clamp(20px, 3vw, 36px);
+  padding: clamp(18px, 2.5vw, 32px);
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  gap: 12px;
-  background: linear-gradient(to top, rgba(28, 32, 40, 0.95) 0%, rgba(28, 32, 40, 0.6) 40%, rgba(28, 32, 40, 0) 100%);
+  gap: 10px;
+  background: linear-gradient(to top, rgba(20, 24, 33, 0.95) 0%, rgba(20, 24, 33, 0.6) 45%, rgba(20, 24, 33, 0) 100%);
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -3154,7 +3177,7 @@ body,
 .branding-card-title {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: clamp(1.4rem, 2.2vw, 1.9rem);
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
   color: #fff;
   line-height: 1.15;
   letter-spacing: -0.01em;
@@ -3167,9 +3190,9 @@ body,
 }
 
 .branding-card-desc {
-  font-size: 0.9rem;
+  font-size: 0.86rem;
   color: rgba(255, 255, 255, 0.85);
-  line-height: 1.7;
+  line-height: 1.6;
   max-width: 100%;
   transform: translateY(10px);
   transition: transform 0.4s ease 0.1s;
@@ -3183,17 +3206,24 @@ body,
   display: none;
 }
 
-/* ── Responsive: mobile ── */
+/* ── Responsive: tablet & mobile ── */
 @media (max-width: 768px) {
-  .branding-cards-list {
-    grid-template-columns: 1fr;
+  .branding-marquee-wrap {
+    padding: 16px 0 32px 0;
+    margin-top: 20px;
+  }
+  .branding-card {
+    flex: 0 0 clamp(280px, 75vw, 360px);
+    width: clamp(280px, 75vw, 360px);
+    margin: 0 10px;
+    border-radius: 16px;
   }
 }
 
 @media (max-width: 640px) {
   .branding-card-content {
     opacity: 1; /* Always show details on mobile */
-    background: linear-gradient(to top, rgba(28, 32, 40, 0.95) 0%, rgba(28, 32, 40, 0.4) 60%, rgba(28, 32, 40, 0) 100%);
+    background: linear-gradient(to top, rgba(20, 24, 33, 0.95) 0%, rgba(20, 24, 33, 0.4) 60%, rgba(20, 24, 33, 0) 100%);
   }
   .branding-card-meta, .branding-card-title, .branding-card-desc {
     transform: none;
